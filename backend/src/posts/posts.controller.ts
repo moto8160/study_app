@@ -33,7 +33,7 @@ export class PostsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PostModel> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PostsResponse> {
     return await this.postsService.findOne(id);
   }
 
@@ -60,9 +60,10 @@ export class PostsController {
   @Delete(':id')
   async delete(
     @Param('id', ParseIntPipe) id: number,
-    @Request() req: JwtRequest,
+    // @Request() req: JwtRequest,
   ): Promise<PostModel> {
-    const userId = req.user.userId;
+    // const userId = req.user.userId;
+    const userId = 1;
     return await this.postsService.delete(id, userId);
   }
 }

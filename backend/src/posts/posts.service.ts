@@ -24,8 +24,23 @@ export class PostsService {
     });
   }
 
-  async findOne(id: number): Promise<PostModel> {
-    return await this.findPostByID(id);
+  // async findOne(id: number): Promise<PostModel> {
+  //   return await this.findPostByID(id);
+  // }
+
+  async findOne(id: number): Promise<PostsResponse> {
+    return this.prisma.post.findUniqueOrThrow({
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        date: true,
+        studyTime: true,
+        updatedAt: true,
+        user: { select: { name: true } },
+      },
+      where: { id },
+    });
   }
 
   async createPost(createPostDto: CreatePostDto, userId: number): Promise<PostModel> {
@@ -53,7 +68,7 @@ export class PostsService {
 
   async delete(id: number, userId: number): Promise<PostModel> {
     const post = await this.findPostByID(id);
-    this.assertOwnPost(post, userId);
+    // this.assertOwnPost(post, userId);
     return this.prisma.post.delete({
       where: { id },
     });
