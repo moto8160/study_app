@@ -13,7 +13,7 @@ export default function DeleteButton({ id }: { id: string }) {
       method: 'DELETE',
     });
 
-    router.push('/posts');
+    router.replace('/posts');
   };
 
   return (

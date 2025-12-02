@@ -2,10 +2,17 @@ import Link from 'next/link';
 import { Post } from '@/src/types/Post';
 import Message from '@/src/components/message';
 
-export default async function PostsPage() {
-  const res = await fetch('http://localhost:4000/posts', {
-    cache: 'no-store', // 常に最新を取得
+const formatDate = (date: string) =>
+  new Date(date).toLocaleString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
   });
+
+export default async function PostsPage() {
+  const res = await fetch('http://localhost:4000/posts');
   const posts: Post[] = await res.json();
 
   return (
@@ -28,7 +35,7 @@ export default async function PostsPage() {
                 <span>⏱ {post.studyTime} 時間</span>
               </div>
               <p className="text-xs text-gray-400 text-right">
-                更新: {new Date(post.updatedAt).toLocaleDateString('ja-JP')}
+                更新: {formatDate(post.updatedAt)}
               </p>
             </Link>
           </li>
