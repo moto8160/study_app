@@ -1,12 +1,6 @@
 import { UserDetail } from '@/src/types/user';
+import { formatDateOnly } from '@/src/utils/formatDate';
 import Link from 'next/link';
-
-const formatDate = (date: string) =>
-  new Date(date).toLocaleString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  });
 
 export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -19,7 +13,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
       <div className="bg-white p-4 rounded-xl shadow mb-6">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-2xl font-semibold">{user.name}</h2>
-          <p className="text-xs text-gray-400">登録: {formatDate(user.createdAt)}</p>
+          <p className="text-xs text-gray-400">登録: {formatDateOnly(user.createdAt)}</p>
         </div>
         <div className="text-sm">
           <p>投稿数: {user.posts.length}</p>
@@ -41,7 +35,7 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
                 <span>📅 {new Date(post.date).toLocaleDateString('ja-JP')}</span>
                 <span>⏱ {post.studyTime} 時間</span>
               </div>
-              <p className="text-xs text-gray-400 text-right">更新: {formatDate(post.updatedAt)}</p>
+              <p className="text-xs text-gray-400 text-right">更新: {formatDateOnly(post.updatedAt)}</p>
             </Link>
           </li>
         ))}

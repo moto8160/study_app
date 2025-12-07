@@ -1,6 +1,8 @@
+import { login } from '../../login/actions';
+
 export async function createUser(formData: FormData) {
   const name = formData.get('name') as string;
-  const email  = formData.get('email') as string;
+  const email = formData.get('email') as string;
   const password = formData.get('password') as string;
 
   const res = await fetch('http://localhost:4000/users', {
@@ -13,6 +15,9 @@ export async function createUser(formData: FormData) {
     const data = await res.json();
     return data.message.join('、');
   }
+
+  // 登録後はそのままログイン
+  await login(formData);
 
   return 'success';
 }

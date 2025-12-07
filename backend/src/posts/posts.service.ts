@@ -2,38 +2,37 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
 import { PrismaService } from 'src/prisma.service';
-import { Post, Post as PostModel } from 'generated/prisma';
-import { PostResponse } from './dto/post-response.dto';
+import { Comment, Post, Post as PostModel } from 'generated/prisma';
+import { PostDetail, PostList } from './types/postResponse';
+import { CreateCommentDto } from 'src/comments/dto/createComment.dto';
 
 @Injectable()
 export class PostsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findAll(): Promise<PostResponse[]> {
+  async findAll(): Promise<PostList[]> {
     return this.prisma.post.findMany({
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        date: true,
-        studyTime: true,
-        updatedAt: true,
+      include: {
         user: { select: { id: true, name: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
   }
 
-  async findOne(id: number): Promise<PostResponse> {
+  async findOne(id: number): Promise<PostDetail> {
     return this.prisma.post.findUniqueOrThrow({
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        date: true,
-        studyTime: true,
-        updatedAt: true,
-        user: { select: { id: true, name: true } },
+      include: {
+        user: {
+          select: { id: true, name: true },
+        },
+        comments: {
+          include: {
+            user: {
+              select: { id: true, name: true },
+            },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
       where: { id },
     });
@@ -49,23 +48,31 @@ export class PostsService {
     });
   }
 
-  async update(id: number, userId: number, updatePostDto: UpdatePostDto): Promise<PostModel> {
+  async update(id: number, userId: number, dto: UpdatePostDto): Promise<PostModel> {
     const post = await this.findPostByID(id);
     this.assertOwnPost(post, userId);
     return this.prisma.post.update({
       where: { id },
       data: {
-        ...updatePostDto,
-        date: new Date(updatePostDto.date),
+        ...dto,
+        date: new Date(dto.date),
       },
     });
   }
 
-  async delete(id: number, userId: number): Promise<PostModel> {
+  async delete(id: number, userId: number) {
     const post = await this.findPostByID(id);
-    // this.assertOwnPost(post, userId);
-    return this.prisma.post.delete({
-      where: { id },
+    this.assertOwnPost(post, userId);
+    await this.prisma.post.delete({ where: { id } });
+  }
+
+  async createComment(id: number, userId: number, dto: CreateCommentDto): Promise<Comment> {
+    return this.prisma.comment.create({
+      data: {
+        post: { connect: { id: id } }, //リレーション
+        user: { connect: { id: userId } },
+        content: dto.content,
+      },
     });
   }
 

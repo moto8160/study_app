@@ -1,15 +1,7 @@
 import Link from 'next/link';
 import { UserList } from '@/src/types/user';
 import Message from '@/src/components/message';
-
-const formatDate = (date: string) =>
-  new Date(date).toLocaleString('ja-JP', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+import { formatDateOnly } from '@/src/utils/formatDate';
 
 export default async function PostsPage() {
   const res = await fetch('http://localhost:4000/users');
@@ -25,13 +17,13 @@ export default async function PostsPage() {
           <li key={user.id}>
             <Link
               href={`/users/${user.id}`}
-              className="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition"
+              className="block bg-white p-3 rounded-xl shadow hover:shadow-xl transition"
             >
               <div className="flex justify-between items-center mb-1">
-                <h2 className="text-sm text-gray-600">{user.name}</h2>
-                <p className="text-xs text-gray-400">作成: {formatDate(user.createdAt)}</p>
+                <h2>{user.name}</h2>
+                <p className="text-xs text-gray-400">登録: {formatDateOnly(user.createdAt)}</p>
               </div>
-            </Link>  
+            </Link>
           </li>
         ))}
       </ul>

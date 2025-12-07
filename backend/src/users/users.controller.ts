@@ -22,30 +22,30 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get()
-  // @UseGuards(JwtAuthGuard)
   async findAll(): Promise<UserListDto[]> {
-    return await this.usersService.findAll();
+    return this.usersService.findAll();
   }
 
   @Get(':id')
-  // @UseGuards(JwtAuthGuard)
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<UserDetailDto> {
-    return await this.usersService.findOne(id);
+    return this.usersService.findOne(id);
   }
 
   @Post()
-  async createUser(@Body() dto: CreateUserDto): Promise<User> {
-    return await this.usersService.createUser(dto);
+  async createUser(@Body() dto: CreateUserDto) {
+    await this.usersService.createUser(dto);
   }
 
+  // フロント未実装
   @Put()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async update(@Request() req: JwtRequest, @Body() dto: CreateUserDto): Promise<User> {
     return await this.usersService.update(req.user.userId, dto);
   }
 
+  // フロント未実装
   @Delete()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async delete(@Request() req: JwtRequest) {
     return await this.usersService.delete(req.user.userId);
   }

@@ -7,7 +7,7 @@ export class AuthController {
   constructor(private readonly authservice: AuthService) {}
 
   @Post()
-  async signIn(@Body() credentialsDto: CredentialsDto): Promise<{ accessToken: string }> {
-    return await this.authservice.signIn(credentialsDto);
+  async signIn(@Body() dto: CredentialsDto): Promise<{ accessToken: string }> {
+    return await this.authservice.signIn(dto);
   }
 }

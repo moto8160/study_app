@@ -24,6 +24,9 @@ export default function Message() {
       if (action === 'update') {
         message = '投稿を更新しました！';
       }
+      if (action === 'delete') {
+        message = '投稿を削除しました！';
+      }
     }
 
     if (type === 'user') {

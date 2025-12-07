@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import { logout } from './logout/actions';
+import { getCurrentUserId } from '../utils/getCurrentUserId';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -19,20 +20,41 @@ export const metadata: Metadata = {
   description: '毎日の勉強内容を記録・共有できるアプリ',
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const currentUserId = await getCurrentUserId();
   return (
     // children-各ページをレンダリング
     <html lang="ja" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
         <header className="fixed w-full bg-black text-white p-4 flex gap-5">
-          <Link href="/">投稿一覧</Link>
-          <Link href="/posts/new">新規投稿</Link>
-          <Link href="/users">ユーザー一覧</Link>
-          <Link href="/users/new">ユーザー登録</Link>
-          <Link href="/login">ログイン</Link>
-          <form action={logout}>
-            <button>ログアウト</button>
-          </form>
+          <Link href="/" className="hover:text-gray-300 transition">
+            投稿一覧
+          </Link>
+          {currentUserId ? (
+            <>
+              <Link href="/posts/new" className="hover:text-gray-300 transition">
+                新規投稿
+              </Link>
+              <Link href={`/users/${currentUserId}`} className="hover:text-gray-300 transition">
+                マイページ
+              </Link>
+              <Link href="/users" className="hover:text-gray-300 transition">
+                ユーザー一覧
+              </Link>
+              <form action={logout}>
+                <button className="hover:text-gray-300 transition">ログアウト</button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Link href="/login" className="hover:text-gray-300 transition">
+                ログイン
+              </Link>
+              <Link href="/users/new" className="hover:text-gray-300 transition">
+                ユーザー登録
+              </Link>
+            </>
+          )}
         </header>
         <main className="pt-14 bg-gray-50 min-h-screen">{children}</main>
       </body>

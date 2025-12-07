@@ -30,9 +30,9 @@ export class UsersService {
     return { ...user, posts: user.posts, totalStudyTime };
   }
 
-  async createUser(dto: CreateUserDto): Promise<User> {
+  async createUser(dto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(dto.password, 10);
-    return await this.prisma.user.create({
+    await this.prisma.user.create({
       data: { ...dto, password: hashedPassword }, //ハッシュ化値で上書き
     });
   }
@@ -47,10 +47,5 @@ export class UsersService {
 
   async delete(userId: number) {
     await this.prisma.user.delete({ where: { id: userId } });
-  }
-
-  // IDからユーザーを取得
-  private async findUserById(id: number): Promise<User> {
-    return this.prisma.user.findUniqueOrThrow({ where: { id } });
   }
 }

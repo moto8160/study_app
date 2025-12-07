@@ -1,5 +1,5 @@
 'use server';
-import { cookies } from 'next/headers';
+import { authFetch } from '@/src/utils/authFetch';
 
 export async function createPost(formData: FormData) {
   const title = formData.get('title') as string;
@@ -7,15 +7,8 @@ export async function createPost(formData: FormData) {
   const studyTime = Number(formData.get('studyTime'));
   const date = formData.get('date') as string;
 
-  const cookieStore = await cookies();
-  const token = cookieStore.get('accessToken')?.value;
-
-  const res = await fetch('http://localhost:4000/posts', {
+  const res = await authFetch('/posts', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json', //データ形式：JSON
-      Authorization: `Bearer ${token}`, //JWT付与
-    },
     body: JSON.stringify({ title, content, studyTime, date }), //js-JSON.stringify: オブジェクトをJSONに変換
   });
 

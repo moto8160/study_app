@@ -12,11 +12,11 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async signIn(credentialsDto: CredentialsDto): Promise<{ accessToken: string }> {
+  async signIn(dto: CredentialsDto): Promise<{ accessToken: string }> {
     //JS-オブジェクトの分割代入
     // const email = credentialsDto.email;
     // const password = credentialsDto.password;
-    const { email, password } = credentialsDto;
+    const { email, password } = dto;
 
     const user = await this.prisma.user.findFirst({ where: { email } }); //emailをユニークにしないと・・・
 

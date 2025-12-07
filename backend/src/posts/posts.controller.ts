@@ -13,10 +13,11 @@ import {
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/createPost.dto';
 import { UpdatePostDto } from './dto/updatePost.dto';
-import { Post as PostModel } from 'generated/prisma';
+import { Comment, Post as PostModel } from 'generated/prisma';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import type { JwtRequest } from 'src/auth/types/jwtRequest';
-import { PostResponse } from './dto/post-response.dto';
+import { PostDetail, PostList } from './types/postResponse';
+import { CreateCommentDto } from 'src/comments/dto/createComment.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -27,12 +28,12 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async findAll(): Promise<PostResponse[]> {
+  async findAll(): Promise<PostList[]> {
     return this.postsService.findAll();
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PostResponse> {
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<PostDetail> {
     return this.postsService.findOne(id);
   }
 
@@ -48,19 +49,25 @@ export class PostsController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Request() req: JwtRequest,
-    @Body() updatePostDto: UpdatePostDto,
+    @Body() dto: UpdatePostDto,
   ): Promise<PostModel> {
-    const userId = req.user.userId; //JWTからユーザーID取得
-    return this.postsService.update(id, userId, updatePostDto);
+    const userId = req.user.userId;
+    return this.postsService.update(id, userId, dto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async delete(
+  delete(@Param('id', ParseIntPipe) id: number, @Request() req: JwtRequest) {
+    const userId = req.user.userId;
+    return this.postsService.delete(id, userId);
+  }
+
+  @Post(':id/comments')
+  async createComment(
     @Param('id', ParseIntPipe) id: number,
-    // @Request() req: JwtRequest,
-  ): Promise<PostModel> {
-    // const userId = req.user.userId;
-    const userId = 1;
-    return await this.postsService.delete(id, userId);
+    @Body() dto: CreateCommentDto,
+  ): Promise<Comment> {
+    const userId: number = 1;
+    return this.postsService.createComment(id, userId, dto);
   }
 }

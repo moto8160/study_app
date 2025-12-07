@@ -10,6 +10,12 @@ export default function EditForm({ post }: { post: Post }) {
 
   async function handleSubmit(formData: FormData) {
     formData.append('id', String(post.id)); //idも送る
+
+  // async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.currentTarget);
+  //   formData.append('id', String(post.id));
+
     //server-actions.ts
     const result = await updatePost(formData);
     if (result !== 'success') {
