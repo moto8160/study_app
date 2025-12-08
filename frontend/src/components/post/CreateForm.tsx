@@ -8,7 +8,7 @@ export default function CreateForm() {
   const [message, setMessage] = useState('');
 
   async function handleSubmit(formData: FormData) {
-    //server-actions.ts
+    //server actions
     const result = await createPost(formData);
 
     if (result !== 'success') {

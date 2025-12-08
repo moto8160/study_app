@@ -23,9 +23,15 @@ export class UsersService {
         id: true,
         name: true,
         createdAt: true,
-        posts: { orderBy: { createdAt: 'desc' } },
+        posts: {
+          include: {
+            user: { select: { id: true, name: true } },
+          },
+          orderBy: { createdAt: 'desc' },
+        },
       },
     });
+
     const totalStudyTime = user.posts.reduce((sum, post) => sum + post.studyTime, 0);
     return { ...user, posts: user.posts, totalStudyTime };
   }

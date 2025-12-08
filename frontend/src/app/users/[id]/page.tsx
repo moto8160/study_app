@@ -1,6 +1,6 @@
+import PostCard from '@/src/components/post/PostCard';
 import { UserDetail } from '@/src/types/user';
 import { formatDateOnly } from '@/src/utils/formatDate';
-import Link from 'next/link';
 
 export default async function UserDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -9,7 +9,6 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
 
   return (
     <div className="max-w-4xl mx-auto p-6 ">
-      <h1 className="text-3xl text-center font-bold mb-6">ユーザー情報</h1>
       <div className="bg-white p-4 rounded-xl shadow mb-6">
         <div className="flex justify-between items-center mb-3">
           <h2 className="text-2xl font-semibold">{user.name}</h2>
@@ -21,22 +20,11 @@ export default async function UserDetailPage({ params }: { params: Promise<{ id:
         </div>
       </div>
 
-      <h1 className="text-2xl text-center font-bold mb-4">投稿一覧</h1>
+      <h1 className="text-xl font-semibold mb-4 border-b pb-1">{user.name} の投稿</h1>
       <ul className="space-y-4">
         {user.posts.map((post) => (
           <li key={post.id}>
-            <Link
-              href={`/posts/${post.id}`}
-              className="block bg-white p-4 rounded-xl shadow hover:shadow-xl transition"
-            >
-              <h2 className="text-xl font-semibold mb-2">{post.title}</h2>
-              <p className="text-gray-700 mb-5">{post.content}</p>
-              <div className="flex gap-5 text-sm text-gray-600">
-                <span>📅 {new Date(post.date).toLocaleDateString('ja-JP')}</span>
-                <span>⏱ {post.studyTime} 時間</span>
-              </div>
-              <p className="text-xs text-gray-400 text-right">更新: {formatDateOnly(post.updatedAt)}</p>
-            </Link>
+            <PostCard post={post} />
           </li>
         ))}
       </ul>

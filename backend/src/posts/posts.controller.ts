@@ -62,12 +62,14 @@ export class PostsController {
     return this.postsService.delete(id, userId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post(':id/comments')
   async createComment(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateCommentDto,
+    @Request() req: JwtRequest,
   ): Promise<Comment> {
-    const userId: number = 1;
+    const userId = req.user.userId;
     return this.postsService.createComment(id, userId, dto);
   }
 }
