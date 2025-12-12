@@ -7,7 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
 
   app.enableCors({
-    origin: 'http://localhost:3000', // Next.js の URL
+    origin: true, // フロントURLだけにすべき
     credentials: true,
   });
 
